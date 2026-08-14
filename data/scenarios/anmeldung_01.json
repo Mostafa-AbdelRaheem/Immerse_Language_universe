@@ -1,0 +1,92 @@
+{
+  "npc": {
+    "id": "buergeramt_clerk_01",
+    "name": "Herr Krüger",
+    "age": 52,
+    "occupation": "Sachbearbeiter, Bürgeramt Munich-Ost",
+    "personality": "Not unfriendly — just has 40 more appointments today. Values preparedness. Softens noticeably (not warmly, just less clipped) if the user is organized and answers directly. Gets terser, not ruder, if the user is unprepared or rambles.",
+    "speaking_style": "Formal Amtsdeutsch, clipped, favors passive/nominal constructions over direct address at higher levels.",
+    "formality": "sehr_hoch",
+    "patience": "low_medium",
+    "knowledge_scope": ["residence_registration", "required_documents", "appointment_booking"],
+    "goals_this_scene": ["process_the_case_correctly", "move_the_queue"],
+    "relationship_kind": "procedural"
+  },
+  "node": {
+    "id": "anmeldung_01",
+    "title": "Anmeldung (Wohnsitzanmeldung)",
+    "category": "Bureaucracy",
+    "location": "buergeramt_office",
+    "applicable_profiles": ["all"],
+    "prerequisites": ["has_fixed_address", "has_termin", "has_valid_id"],
+    "next_nodes": ["bank_account", "anmeldung_missed_appointment"],
+    "difficulty_by_level": {
+      "A1": {"npc_speed": "slow", "subtitles": true, "vocab_hints": true, "clerk_repeats_on_request": true},
+      "A2": {"npc_speed": "normal", "subtitles": false, "clerk_repeats_on_request": true},
+      "B1": {"npc_speed": "normal", "subtitles": false, "clerk_repeats_on_request": "only_if_asked_politely"},
+      "B2": {"npc_speed": "fast", "subtitles": false, "clerk_uses_amtsdeutsch": true},
+      "C1": {"npc_speed": "fast", "subtitles": false, "clerk_uses_amtsdeutsch": true, "clerk_dry_humor": true}
+    },
+    "npc_refs": ["buergeramt_clerk_01"],
+    "learning_objectives": {
+      "vocab": [
+        "Meldebescheinigung", "Wohnsitz", "Anmeldeformular", "Personalausweis",
+        "Vermieterbescheinigung", "Unterschrift", "Unterlagen", "Termin"
+      ],
+      "grammar": [
+        "perfekt_for_stating_completed_prep",
+        "separable_verbs_bureaucratic",
+        "formal_question_inversion"
+      ],
+      "expressions": [
+        "Haben Sie einen Termin?",
+        "Haben Sie die Unterlagen dabei?",
+        "Das fehlt noch.",
+        "Bitte füllen Sie das aus.",
+        "Wo muss ich unterschreiben?"
+      ]
+    },
+    "possible_outcomes": [
+      "registration_completed",
+      "registration_incomplete_missing_document",
+      "user_no_show"
+    ],
+    "failure_states": ["missing_vermieterbescheinigung", "user_no_show", "form_filled_incorrectly"],
+    "world_state_deltas": {
+      "registration_completed": {
+        "residency.registered": true,
+        "meldebescheinigung.issued": true,
+        "tax_id.pending": true
+      },
+      "registration_incomplete_missing_document": {
+        "residency.registered": false,
+        "anmeldung.attempts": "+1",
+        "pending_task": "obtain_vermieterbescheinigung"
+      },
+      "user_no_show": {
+        "anmeldung.termin": "forfeited",
+        "pending_task": "rebook_termin"
+      }
+    },
+    "relationship_deltas": {
+      "registration_completed": {"clerk.impression": 1},
+      "registration_incomplete_missing_document": {"clerk.impression": 0},
+      "user_no_show": {"clerk.impression": -1}
+    },
+    "required_documents": [
+      {"item": "personalausweis", "source": "user_inventory"},
+      {"item": "mietvertrag", "source": "user_inventory"},
+      {"item": "vermieterbescheinigung", "source": "user_inventory", "commonly_missing": true}
+    ],
+    "reentry_dialogue_rules": {
+      "attempts_gt_0": "Clerk opens with acknowledgment of prior visit and checks specifically for the previously-missing document, rather than restarting the full intake script. E.g. \"Ah — Sie waren schon einmal hier. Haben Sie die Vermieterbescheinigung jetzt dabei?\""
+    },
+    "recurring_dialogue_rules": {},
+    "notebook_candidates": [
+      "Meldebescheinigung",
+      "Vermieterbescheinigung",
+      "Haben Sie die Unterlagen dabei?",
+      "Das fehlt noch."
+    ]
+  }
+}

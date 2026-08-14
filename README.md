@@ -1,4 +1,15 @@
+Create an environment in order tho have all the packages in it
+```bash
+conda create --name immerse-language-universe python=3.10
+
+```
+Install the dependencies needed:
+```bash
+pip install -r requirements.txt
+```
 # Immerse_Language_universe"
+
+```bash
 leben-in-deutschland/
 ├── docker-compose.yml
 └── backend/
@@ -24,3 +35,5 @@ leben-in-deutschland/
     │   └── api/                    # FastAPI routes (added in Step 2)
     │
     └── tests/                      # Pytest tests (replaces manually run scripts)
+
+```

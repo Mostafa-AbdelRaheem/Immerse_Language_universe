@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: leben-postgres
+    environment:
+      POSTGRES_USER: leben_user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: leben_in_deutschland
+    ports:
+      - "5400:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend
+    restart: always
+
+networks:
+  backend:
+
+volumes:
+  postgres_data:
