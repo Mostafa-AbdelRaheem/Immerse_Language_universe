@@ -20,7 +20,7 @@ from app.config import get_settings
 
 
 app_settings = get_settings()
-engine = create_async_engine(get_settings.DATABASE_URL, echo=False)
+engine = create_async_engine(app_settings.DATABASE_URL, echo=False)
 
 AsyncSessionLocal = async_sessionmaker(
     bind=engine,
