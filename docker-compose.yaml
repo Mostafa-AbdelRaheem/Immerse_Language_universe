@@ -1,3 +1,5 @@
+name: leben-in-deutschland
+
 services:
   postgres:
     image: postgres:17
